@@ -1,0 +1,14 @@
+# Ignore virtual environment files
+venv/
+
+# Ignore Flask cache files
+__pycache__/
+
+# Ignore IDE files
+.vscode/
+.idea/
+
+# Ignore other files
+*.log
+*.tmp
+*.pid

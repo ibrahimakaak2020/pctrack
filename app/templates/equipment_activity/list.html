@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block title %}Equipment Activities{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>Equipment Activities</h1>
+    <a href="{{ url_for('equipment_activity.create') }}" class="btn btn-primary">Add Activity</a>
+</div>
+
+<div class="table-responsive">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Equipment</th>
+                <th>Date</th>
+                <th>Status</th>
+                <th>Description</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for activity in activities %}
+            <tr>
+                <td>{{ activity.activityid }}</td>
+                <td>{{ activity.equipment_register.equipment.sn }}</td>
+                <td>{{ activity.activitydate.strftime('%Y-%m-%d') }}</td>
+                <td>{{ activity.activitystatus }}</td>
+                <td>{{ activity.activitydesc }}</td>
+                <td>
+                    <a href="{{ url_for('equipment_activity.edit', activityid=activity.activityid) }}" class="btn btn-sm btn-warning">Edit</a>
+                    <form action="{{ url_for('equipment_activity.delete', activityid=activity.activityid) }}" method="POST" class="d-inline">
+                        <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure?')">Delete</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %} 

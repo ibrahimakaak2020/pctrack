@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block title %}Access Denied{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center mt-5">
+        <div class="col-md-6 text-center">
+            <div class="error-template">
+                <img src="{{ url_for('static', filename='images/403.svg') }}" 
+                     alt="403 Error" 
+                     class="img-fluid mb-4" 
+                     style="max-width: 300px;">
+                
+                <h1 class="display-4 text-muted">Access Denied!</h1>
+                <h2 class="text-warning mb-3">403 - Forbidden</h2>
+                
+                <div class="error-details mb-4">
+                    Sorry, you don't have permission to access this page.
+                </div>
+                
+                <div class="error-actions">
+                    <a href="{{ return_url }}" class="btn btn-secondary btn-lg me-2">
+                        <i class="bi bi-arrow-left me-2"></i>Go Back
+                    </a>
+                    <a href="{{ url_for('main.index') }}" class="btn btn-primary btn-lg">
+                        <i class="bi bi-house me-2"></i>Take Me Home
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 
