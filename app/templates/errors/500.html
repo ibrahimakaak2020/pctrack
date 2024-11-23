@@ -1,34 +1,14 @@
 {% extends "base.html" %}
 
-{% block title %}Server Error{% endblock %}
-
 {% block content %}
-<div class="container">
-    <div class="row justify-content-center mt-5">
-        <div class="col-md-6 text-center">
-            <div class="error-template">
-                <img src="{{ url_for('static', filename='images/500.svg') }}" 
-                     alt="500 Error" 
-                     class="img-fluid mb-4" 
-                     style="max-width: 300px;">
-                
-                <h1 class="display-4 text-muted">Something went wrong!</h1>
-                <h2 class="text-danger mb-3">500 - Server Error</h2>
-                
-                <div class="error-details mb-4">
-                    Sorry, something went wrong on our end. Please try again later.
-                </div>
-                
-                <div class="error-actions">
-                    <a href="{{ return_url }}" class="btn btn-secondary btn-lg me-2">
-                        <i class="bi bi-arrow-left me-2"></i>Go Back
-                    </a>
-                    <a href="{{ url_for('main.index') }}" class="btn btn-primary btn-lg">
-                        <i class="bi bi-house me-2"></i>Take Me Home
-                    </a>
-                </div>
-            </div>
-        </div>
+<div class="container text-center py-5">
+    <div class="error-page">
+        <h1 class="display-1">500</h1>
+        <h2 class="mb-4">Internal Server Error</h2>
+        <p class="lead text-muted mb-4">Something went wrong on our end. Please try again later.</p>
+        <a href="{{ url_for('main.index') }}" class="btn btn-primary">
+            <i class="fas fa-home me-2"></i>Back to Home
+        </a>
     </div>
 </div>
 {% endblock %} 
