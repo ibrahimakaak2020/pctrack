@@ -10,21 +10,23 @@ company_bp = Blueprint('company', __name__)
 @company_bp.route('/companies')
 @login_required
 def company_list():
-    search_form = CompanySearchForm()
+    search = request.args.get('search', '')
     query = CompanyUser.query
     
-    if search_form.search.data:
-        search_term = f"%{search_form.search.data}%"
+    if search:
         query = query.filter(
             db.or_(
-                CompanyUser.staffname.ilike(search_term),
-                CompanyUser.companyname_en.ilike(search_term),
-                CompanyUser.companyname_ar.ilike(search_term),
-                CompanyUser.contactnumber.ilike(search_term)
+                CompanyUser.staffname.ilike(f'%{search}%'),
+                CompanyUser.companyname_en.ilike(f'%{search}%'),
+                CompanyUser.companyname_ar.ilike(f'%{search}%'),
+                CompanyUser.contactnumber.ilike(f'%{search}%')
             )
         )
     
     companies = query.order_by(CompanyUser.companyname_en).all()
+    search_form = CompanySearchForm()
+    search_form.search.data = search
+    
     return render_template('company/list.html', 
                          companies=companies, 
                          search_form=search_form)

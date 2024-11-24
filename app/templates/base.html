@@ -233,6 +233,17 @@
                         </li>
                         {% endif %}
 
+                        <!-- Workshops -->
+                        {% if current_user.is_authenticated %}
+                        <li class="nav-item">
+                            <a class="nav-link {% if request.endpoint and request.endpoint.startswith('workshop.') %}active{% endif %}" 
+                               href="{{ url_for('workshop.list_workshops') }}">
+                                <i class="fas fa-tools"></i>
+                                Workshops
+                            </a>
+                        </li>
+                        {% endif %}
+
                         <!-- Users (Admin Only) -->
                         {% if current_user.is_authenticated and current_user.isadmin %}
                         <li class="nav-item">

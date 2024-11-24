@@ -13,7 +13,7 @@
         </button>
         <ul class="dropdown-menu dropdown-menu-end user-dropdown">
             <li class="dropdown-header">
-                <span class="user-email">{{ current_user.staffno }}</span>
+                <span class="user-email">{% if current_user.isadmin %}Admininstrator{% else %}User{% endif %}</span>
             </li>
             <li><hr class="dropdown-divider"></li>
             <li>

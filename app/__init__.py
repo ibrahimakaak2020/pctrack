@@ -3,6 +3,7 @@ from app.config.config import config_dict
 from app.db.database import init_db, db, login_manager, migrate
 from datetime import datetime
 from flask_wtf.csrf import CSRFProtect
+from app.blueprints.workshop import workshop
 
 def create_app(config_name='default'):
     app = Flask(__name__)
@@ -42,6 +43,7 @@ def create_app(config_name='default'):
     app.register_blueprint(users_bp)
     app.register_blueprint(main_bp)
     app.register_blueprint(company_bp)
+    app.register_blueprint(workshop)
   
     
    

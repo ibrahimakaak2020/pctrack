@@ -3,7 +3,7 @@
 {% block title %}Companies{% endblock %}
 
 {% block content %}
-<div class="container>
+<div class="container">
     <!-- Page Header -->
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
@@ -27,21 +27,21 @@
     <!-- Search Form -->
     <div class="card shadow-sm mb-4">
         <div class="card-body">
-            <form method="GET" class="row g-3 align-items-center" id="searchForm">
+            <form method="GET" action="{{ url_for('company.company_list') }}" class="row g-3 align-items-center" id="searchForm">
                 {{ search_form.hidden_tag() }}
                 <div class="col-md-4">
                     <div class="search-box">
                         <i class="fas fa-search position-absolute top-50 start-0 translate-middle-y ms-3"></i>
-                        {{ search_form.search(class="form-control ps-5", placeholder="Search companies...") }}
+                        {{ search_form.search(class="form-control ps-5", placeholder="Search companies...", value=request.args.get('search', ''), id="searchInput") }}
                     </div>
                 </div>
                 <div class="col-md-auto">
                     {{ search_form.submit(class="btn btn-primary") }}
                 </div>
                 <div class="col-md-auto">
-                    <button type="button" class="btn btn-outline-secondary" id="resetSearch">
+                    <a href="{{ url_for('company.company_list') }}" class="btn btn-outline-secondary">
                         <i class="fas fa-sync-alt me-2"></i>Reset
-                    </button>
+                    </a>
                 </div>
             </form>
         </div>
@@ -230,9 +230,21 @@ document.addEventListener('DOMContentLoaded', function() {
         return new bootstrap.Tooltip(tooltipTriggerEl)
     });
 
+    // Add live search functionality
+    const searchInput = document.getElementById('searchInput');
+    let typingTimer;
+    const doneTypingInterval = 300; // Wait for 300ms after user stops typing
+
+    searchInput.addEventListener('input', function() {
+        clearTimeout(typingTimer);
+        typingTimer = setTimeout(() => {
+            document.getElementById('searchForm').submit();
+        }, doneTypingInterval);
+    });
+
     // Reset search
     document.getElementById('resetSearch').addEventListener('click', function() {
-        document.getElementById('search').value = '';
+        document.getElementById('searchInput').value = '';
         document.getElementById('searchForm').submit();
     });
 });

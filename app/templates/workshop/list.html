@@ -1,0 +1,177 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Workshops</h2>
+        {% if current_user.isadmin %}
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addWorkshopModal">
+            <i class="fas fa-plus"></i> Add Workshop
+        </button>
+        {% endif %}
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>Workshop Name</th>
+                    <th>Building</th>
+                    <th>Contact</th>
+                    {% if current_user.isadmin %}
+                    <th>Actions</th>
+                    {% endif %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for workshop in workshops %}
+                <tr>
+                    <td>{{ workshop.workshopname }}</td>
+                    <td>{{ workshop.building }}</td>
+                    <td>{{ workshop.contact }}</td>
+                    {% if current_user.isadmin %}
+                    <td>
+                        <button class="btn btn-sm btn-primary me-2" onclick="editWorkshop({{ workshop.id }}, '{{ workshop.workshopname }}', '{{ workshop.building }}', '{{ workshop.contact }}')">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="btn btn-sm btn-danger" onclick="deleteWorkshop({{ workshop.id }})">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                    {% endif %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Add Workshop Modal -->
+{% if current_user.isadmin %}
+<div class="modal fade" id="addWorkshopModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add New Workshop</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form id="addWorkshopForm" method="POST" action="{{ url_for('workshop.add_workshop') }}">
+                <div class="modal-body">
+                    {{ form.csrf_token }}
+                    <div class="mb-3">
+                        <label class="form-label">Workshop Name</label>
+                        {{ form.workshopname(class="form-control") }}
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Building</label>
+                        {{ form.building(class="form-control") }}
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Contact</label>
+                        {{ form.contact(class="form-control") }}
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Add Workshop</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<!-- Add Edit Workshop Modal -->
+{% if current_user.isadmin %}
+<div class="modal fade" id="editWorkshopModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Edit Workshop</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form id="editWorkshopForm" method="POST">
+                <div class="modal-body">
+                    {{ form.csrf_token }}
+                    <input type="hidden" id="edit_workshop_id" name="workshop_id">
+                    <div class="mb-3">
+                        <label class="form-label">Workshop Name</label>
+                        {{ form.workshopname(class="form-control", id="edit_workshopname") }}
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Building</label>
+                        {{ form.building(class="form-control", id="edit_building") }}
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Contact</label>
+                        {{ form.contact(class="form-control", id="edit_contact") }}
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Update Workshop</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Initialize modals
+const editModal = new bootstrap.Modal(document.getElementById('editWorkshopModal'));
+
+function editWorkshop(id, name, building, contact) {
+    document.getElementById('edit_workshop_id').value = id;
+    document.getElementById('edit_workshopname').value = name;
+    document.getElementById('edit_building').value = building;
+    document.getElementById('edit_contact').value = contact;
+    
+    // Update form action
+    document.getElementById('editWorkshopForm').action = `/workshop/update/${id}`;
+    
+    editModal.show();
+}
+
+function deleteWorkshop(workshopId) {
+    Swal.fire({
+        title: 'Are you sure?',
+        text: "You won't be able to revert this!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Yes, delete it!'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            fetch(`/workshop/delete/${workshopId}`, {
+                method: 'DELETE',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token() }}'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    Swal.fire(
+                        'Deleted!',
+                        'Workshop has been deleted.',
+                        'success'
+                    ).then(() => {
+                        location.reload();
+                    });
+                } else {
+                    Swal.fire(
+                        'Error!',
+                        data.message || 'Failed to delete workshop',
+                        'error'
+                    );
+                }
+            });
+        }
+    });
+}
+</script>
+{% endblock %} 
