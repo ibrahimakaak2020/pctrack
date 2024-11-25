@@ -4,6 +4,11 @@ from app.db.database import init_db, db, login_manager, migrate
 from datetime import datetime
 from flask_wtf.csrf import CSRFProtect
 from app.blueprints.workshop import workshop
+from app.blueprints.equipment import equipment_bp
+from app.blueprints.maintenance import maintenance
+from app.utils.filters import filters
+from app.blueprints.reports import reports_bp
+from app.blueprints.notifications import notifications_bp
 
 def create_app(config_name='default'):
     app = Flask(__name__)
@@ -44,6 +49,11 @@ def create_app(config_name='default'):
     app.register_blueprint(main_bp)
     app.register_blueprint(company_bp)
     app.register_blueprint(workshop)
+    app.register_blueprint(equipment_bp)
+    app.register_blueprint(maintenance)
+    app.register_blueprint(filters)
+    app.register_blueprint(reports_bp, url_prefix='/reports')
+    app.register_blueprint(notifications_bp, url_prefix='/notifications')
   
     
    

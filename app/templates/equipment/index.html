@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Equipment List</h1>
+        <a href="{{ url_for('equipment.create') }}" class="btn btn-primary">Add New Equipment</a>
+    </div>
+
+    <form method="GET" class="mb-4">
+        <div class="input-group">
+            {{ search_form.search(class="form-control", placeholder="Search equipment...") }}
+            <button type="submit" class="btn btn-outline-secondary">{{ search_form.submit.label }}</button>
+        </div>
+    </form>
+
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Serial Number</th>
+                    <th>Model Name</th>
+                    <th>Type</th>
+                    <th>Manufacturer</th>
+                    <th>Location</th>
+                    <th>Building</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in equipment %}
+                <tr>
+                    <td>{{ item.sn }}</td>
+                    <td>{{ item.model_name }}</td>
+                    <td>{{ item.equipment_type }}</td>
+                    <td>{{ item.manufacturer }}</td>
+                    <td>{{ item.locname }}</td>
+                    <td>{{ item.building }}</td>
+                    <td>
+                        <a href="{{ url_for('equipment.view', sn=item.sn) }}" class="btn btn-sm btn-info">View</a>
+                        <a href="{{ url_for('equipment.edit', sn=item.sn) }}" class="btn btn-sm btn-warning">Edit</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %} 

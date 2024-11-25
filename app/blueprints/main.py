@@ -14,8 +14,10 @@ def index():
 @login_required
 def dashboard():
     # Add any dashboard statistics or data you want to display
+    notification_count = 0  # Set this to your actual notification count logic
     stats = {
         'total_users': db.session.query(User).count(),
+        'notification_count': 0
         # Add more statistics as needed
     }
-    return render_template('main/dashboard.html', stats=stats) 
+    return render_template('main/dashboard.html', stats=stats, notification_count=notification_count) 

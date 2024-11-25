@@ -1,5 +1,5 @@
 from app.db.database import db
-from datetime import datetime
+from datetime import datetime, timezone
 from flask_login import UserMixin
 from app.db.database import login_manager
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -20,8 +20,9 @@ class User(db.Model, UserMixin):
     staffname = db.Column(db.String(100), nullable=False)
     password_hash = db.Column(db.String(128))
     isadmin = db.Column(db.Boolean, nullable=False, default=False)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
+    updated_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc), onupdate=lambda: datetime.now(timezone.utc))
+    
     
     def get_id(self):
         return str(self.staffno)
@@ -55,11 +56,13 @@ class Equipment(db.Model):
     # Equipment Details
     model_name = db.Column(db.String(100), nullable=False)
     equipment_type = db.Column(db.String(50), nullable=False)  # CPU, Printer, etc.
-    manufacturer = db.Column(db.String(100), nullable=False)
+    manufacturer = db.Column(db.String(100), nullable=False) #
     locname = db.Column(db.String(100), nullable=False)
     building = db.Column(db.String(100), nullable=False)
     note = db.Column(db.String(200))
-    created_at = db.Column(db.DateTime, default=lambda: datetime.now(datetime.UTC))
+    created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
+    created_by = db.Column(db.Integer, db.ForeignKey('user.staffno'), nullable=False)
+
 
     def __repr__(self):
         return f'<Equipment {self.model_name} (SN: {self.sn})>'
@@ -69,7 +72,7 @@ class MaintenanceStatus(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     maintenance_id = db.Column(db.Integer, db.ForeignKey('maintenance_record.id'), nullable=False)
-    status_date = db.Column(db.DateTime, default=lambda: datetime.now(datetime.UTC))
+    status_date = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
     status = db.Column(db.String(20), nullable=False)  # 'received', 'diagnosed', 'in_progress', 'completed', 'cancelled'
     notes = db.Column(db.Text)
     updated_by = db.Column(db.Integer, db.ForeignKey('user.staffno'), nullable=False)
@@ -84,7 +87,7 @@ class MaintenanceRecord(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     equipment_sn = db.Column(db.String(50), db.ForeignKey('equipment.sn'), nullable=False)
     registered_by = db.Column(db.Integer, db.ForeignKey('user.staffno'), nullable=False)
-    maintenance_date = db.Column(db.DateTime, default=lambda: datetime.now(datetime.UTC))
+    maintenance_date = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
     is_external = db.Column(db.Boolean, nullable=False)
     
     # Workshop or Company reference

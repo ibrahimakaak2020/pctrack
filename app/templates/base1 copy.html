@@ -275,14 +275,6 @@
                             </a>
                         </li>
                         {% endif %}
-
-                        {% for equipment in equipment_list %}
-                            <li class="nav-item">
-                                <a href="{{ url_for('maintenance.equipment_history', sn=equipment.sn) }}" class="nav-link">
-                                    {{ equipment.model_name }} History (SN: {{ equipment.sn }})
-                                </a>
-                            </li>
-                        {% endfor %}
                     </ul>
 
                     <!-- Settings Section -->
