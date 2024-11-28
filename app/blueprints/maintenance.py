@@ -3,6 +3,7 @@ from flask_wtf import FlaskForm
 from wtforms import SelectField, TextAreaField, FloatField, SubmitField
 from wtforms.validators import DataRequired
 from flask_login import login_required, current_user
+from app.forms import EquipmentRegistrationForm
 from app.models.tables import Equipment, MaintenanceRecord, MaintenanceStatus, Workshop, CompanyUser
 from app.db.database import db
 from datetime import datetime, timezone
@@ -117,6 +118,7 @@ def update_status(record_id):
 @login_required
 def new_record(sn):
     equipment = Equipment.query.get_or_404(sn)
+    form = EquipmentRegistrationForm()
     if request.method == 'POST':
         try:
             record = MaintenanceRecord(
@@ -154,7 +156,7 @@ def new_record(sn):
     # Get available workshops and companies for the form
     workshops = Workshop.query.all()
     companies = CompanyUser.query.all()
-    return render_template('maintenance/new.html', 
+    return render_template('maintenance/new.html', form=form,
                          equipment=equipment,
                          workshops=workshops,
                          companies=companies)
@@ -202,7 +204,17 @@ def get_status_history(record_id):
 @login_required
 def equipment_list():
     equipment = Equipment.query.all()
-    return render_template('maintenance/equipment_list.html', equipment=equipment)
+    # Get all active maintenance records for each equipment
+    maintenance_records = {}
+    for eq in equipment:
+        maintenance_records[eq.sn] = MaintenanceRecord.query.filter_by(equipment_sn=eq.sn)\
+            .filter(MaintenanceRecord.current_status.in_(['pending', 'received', 'diagnosed', 'in_progress']))\
+            .order_by(MaintenanceRecord.maintenance_date.desc())\
+            .all()
+    
+    return render_template('maintenance/equipment_list.html', 
+                         equipment=equipment,
+                         maintenance_records=maintenance_records)
 
 # Active Maintenance Records
 @maintenance.route('/active')
@@ -221,22 +233,25 @@ def equipment_register():
         flash('Access denied. Admin privileges required.', 'danger')
         return redirect(url_for('maintenance.equipment_list'))
     
+    form = EquipmentRegistrationForm()  # Create an instance of your form class
+
     if request.method == 'POST':
-        try:
-            equipment = Equipment(
-                sn=request.form['sn'],
-                model_name=request.form['model_name'],
-                # Add other fields as needed
-            )
-            db.session.add(equipment)
-            db.session.commit()
-            flash('Equipment registered successfully', 'success')
-            return redirect(url_for('maintenance.equipment_list'))
-        except Exception as e:
-            db.session.rollback()
-            flash(f'Error registering equipment: {str(e)}', 'danger')
+        if form.validate_on_submit():  # Validate the form
+            try:
+                equipment = Equipment(
+                    sn=form.sn.data,
+                    model_name=form.model_name.data,
+                    # Add other fields as needed
+                )
+                db.session.add(equipment)
+                db.session.commit()
+                flash('Equipment registered successfully', 'success')
+                return redirect(url_for('maintenance.equipment_list'))
+            except Exception as e:
+                db.session.rollback()
+                flash(f'Error registering equipment: {str(e)}', 'danger')
     
-    return render_template('maintenance/equipment_register.html')
+    return render_template('maintenance/equipment_register.html', form=form)  # Pass the form to the template
 
 # Search Route
 @maintenance.route('/search')

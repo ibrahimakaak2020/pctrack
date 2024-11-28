@@ -3,6 +3,9 @@ from datetime import datetime, timezone
 from flask_login import UserMixin
 from app.db.database import login_manager
 from werkzeug.security import generate_password_hash, check_password_hash
+from flask_wtf import FlaskForm
+from wtforms import StringField, SelectField, TextAreaField, FloatField, SubmitField
+from wtforms.validators import DataRequired
 
 class CompanyUser(db.Model):
     __tablename__ = "companyuser"
@@ -119,4 +122,3 @@ class MaintenanceRecord(db.Model):
     def latest_status(self):
         return self.status_updates.order_by(MaintenanceStatus.status_date.desc()).first()
 
-# Add other models similarly...

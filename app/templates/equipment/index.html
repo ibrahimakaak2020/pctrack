@@ -39,6 +39,7 @@
                     <td>
                         <a href="{{ url_for('equipment.view', sn=item.sn) }}" class="btn btn-sm btn-info">View</a>
                         <a href="{{ url_for('equipment.edit', sn=item.sn) }}" class="btn btn-sm btn-warning">Edit</a>
+                        <a href="{{ url_for('maintenance.new_record', sn=item.sn) }}" class="btn btn-sm btn-success">Add Maintenance</a>
                     </td>
                 </tr>
                 {% endfor %}

@@ -20,7 +20,7 @@ class EquipmentForm(FlaskForm):
             "placeholder": "Enter model name",
             "class": "form-control"
         },
-        description="The specific model name or number of the equipment")
+        description="The specific model name or number of the equipment(e.g. HP PRO ...)")
     
     equipment_type = StringField('Equipment Type',
         validators=[DataRequired(), Length(max=100)],
@@ -28,7 +28,7 @@ class EquipmentForm(FlaskForm):
             "placeholder": "Enter equipment type",
             "class": "form-control"
         },
-        description="Category of the equipment")
+        description="Category of the equipment (e.g.CPU , PRINTER, SCANNER ...)")
     
     manufacturer = StringField('Manufacturer',
         validators=[DataRequired(), Length(max=100)],
@@ -36,7 +36,7 @@ class EquipmentForm(FlaskForm):
             "placeholder": "Enter manufacturer name",
             "class": "form-control"
         },
-        description="Name of the equipment manufacturer")
+        description="Name of the equipment manufacturer (e.g. HP,DELL,LENOVO ....)")
     
     locname = StringField('Location Name',
         validators=[DataRequired(), Length(max=100)],
@@ -44,7 +44,7 @@ class EquipmentForm(FlaskForm):
             "placeholder": "Enter location name (e.g., Room 101, Lab A)",
             "class": "form-control"
         },
-        description="Specific location where the equipment is placed")
+        description="Specific location where the equipment is placed ")
     
     building = StringField('Building',
         validators=[DataRequired(), Length(max=100)],

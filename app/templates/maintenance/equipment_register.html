@@ -1,0 +1,21 @@
+   <!-- app/templates/maintenance/equipment_register.html -->
+   {% extends "base.html" %}
+
+   {% block content %}
+   <div class="container mt-4">
+       <h2>Register New Equipment</h2>
+       <form method="POST">
+           {{ form.hidden_tag() }}
+           <div class="form-group">
+               {{ form.sn.label(class="form-label") }}
+               {{ form.sn(class="form-control") }}
+           </div>
+           <div class="form-group">
+               {{ form.model_name.label(class="form-label") }}
+               {{ form.model_name(class="form-control") }}
+           </div>
+           <!-- Add other fields as needed -->
+           <button type="submit" class="btn btn-primary">Register Equipment</button>
+       </form>
+   </div>
+   {% endblock %}

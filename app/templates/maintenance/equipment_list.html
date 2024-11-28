@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <h2>Equipment List</h2>
+    
+    <div class="accordion" id="equipmentAccordion">
+        {% for equipment in equipment_list %}
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="heading{{ equipment.sn }}">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                        data-bs-target="#collapse{{ equipment.sn }}">
+                    {{ equipment.model_name }} (SN: {{ equipment.sn }})
+                </button>
+            </h2>
+            <div id="collapse{{ equipment.sn }}" class="accordion-collapse collapse" 
+                 data-bs-parent="#equipmentAccordion">
+                <div class="accordion-body">
+                    <h5>Active Maintenance Records</h5>
+                    {% if maintenance_records[equipment.sn] %}
+                        <div class="list-group">
+                        {% for record in maintenance_records[equipment.sn] %}
+                            <a href="{{ url_for('maintenance.record_detail', record_id=record.id) }}" 
+                               class="list-group-item list-group-item-action">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="mb-1">Maintenance ID: {{ record.id }}</h6>
+                                        <p class="mb-1">{{ record.problem_description[:100] }}...</p>
+                                    </div>
+                                    <span class="badge bg-{{ status_colors[record.current_status] }}">
+                                        {{ record.current_status|title }}
+                                    </span>
+                                </div>
+                            </a>
+                        {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="text-muted">No active maintenance records</p>
+                    {% endif %}
+                    
+                    <div class="mt-3">
+                        <a href="{{ url_for('maintenance.new_record', sn=equipment.sn) }}" 
+                           class="btn btn-primary btn-sm">
+                            New Maintenance Record
+                        </a>
+                        <a href="{{ url_for('maintenance.equipment_history', sn=equipment.sn) }}" 
+                           class="btn btn-secondary btn-sm">
+                            View Full History
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %} 

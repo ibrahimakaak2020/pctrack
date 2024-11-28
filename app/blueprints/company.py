@@ -62,10 +62,14 @@ def edit_company(cid):
     form = CompanyUserForm(obj=company)
     
     if form.validate_on_submit():
-        company.staffname = form.staffname.data
-        company.companyname_en = form.companyname_en.data
-        company.companyname_ar = form.companyname_ar.data
-        company.contactnumber = form.contactnumber.data
+        if company.staffname != form.staffname.data:
+                company.staffname = form.staffname.data
+        if company.companyname_en != form.companyname_en.data:
+            company.companyname_en = form.companyname_en.data
+        if company.companyname_ar != form.companyname_ar.data:
+            company.companyname_ar = form.companyname_ar.data
+        if company.contactnumber != form.contactnumber.data:
+            company.contactnumber = form.contactnumber.data
         db.session.commit()
         flash('Company updated successfully', 'success')
         return redirect(url_for('company.company_list'))

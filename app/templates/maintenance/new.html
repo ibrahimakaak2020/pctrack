@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <h1>Register New Equipment</h1>
+    
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <ul class="flashes">
+            {% for message in messages %}
+                <li>{{ message }}</li>
+            {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
+    
+    <form method="POST" action="{{ url_for('maintenance.new_record',sn=equipment.sn) }}">
+        {{ form.hidden_tag() }} <!-- CSRF protection -->
+        
+        <div class="form-group">
+            {{ form.model_name.label(class="form-label") }}
+            {{ form.model_name(class="form-control") }}
+            {% for error in form.model_name.errors %}
+                <span class="text-danger">{{ error }}</span>
+            {% endfor %}
+        </div>
+        
+        <div class="form-group">
+            {{ form.equipment_type.label(class="form-label") }}
+            {{ form.equipment_type(class="form-control") }}
+            {% for error in form.equipment_type.errors %}
+                <span class="text-danger">{{ error }}</span>
+            {% endfor %}
+        </div>
+        
+        <div class="form-group">
+            {{ form.manufacturer.label(class="form-label") }}
+            {{ form.manufacturer(class="form-control") }}
+            {% for error in form.manufacturer.errors %}
+                <span class="text-danger">{{ error }}</span>
+            {% endfor %}
+        </div>
+        
+        <div class="form-group">
+            {{ form.locname.label(class="form-label") }}
+            {{ form.locname(class="form-control") }}
+            {% for error in form.locname.errors %}
+                <span class="text-danger">{{ error }}</span>
+            {% endfor %}
+        </div>
+        
+        <div class="form-group">
+            {{ form.building.label(class="form-label") }}
+            {{ form.building(class="form-control") }}
+            {% for error in form.building.errors %}
+                <span class="text-danger">{{ error }}</span>
+            {% endfor %}
+        </div>
+        
+        <div class="form-group">
+            {{ form.note.label(class="form-label") }}
+            {{ form.note(class="form-control") }}
+            {% for error in form.note.errors %}
+                <span class="text-danger">{{ error }}</span>
+            {% endfor %}
+        </div>
+        
+        <div class="form-group">
+            {{ form.created_by.label(class="form-label") }}
+            {{ form.created_by(class="form-control") }}
+            {% for error in form.created_by.errors %}
+                <span class="text-danger">{{ error }}</span>
+            {% endfor %}
+        </div>
+        
+        <div class="form-group">
+            {{ form.submit(class="btn btn-primary") }}
+        </div>
+    </form>
+    
+    <a href="{{ url_for('maintenance.equipment_list') }}">Back to Equipment List</a>
+</div>
+{% endblock %}
