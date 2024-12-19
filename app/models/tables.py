@@ -55,7 +55,7 @@ class Equipment(db.Model):
 
     # Primary Key
     sn = db.Column(db.String(50), primary_key=True, index=True)
-    
+    isundermaintenance = db.Column(db.Boolean, default=False)
     # Equipment Details
     model_name = db.Column(db.String(100), nullable=False)
     equipment_type = db.Column(db.String(50), nullable=False)  # CPU, Printer, etc.
@@ -92,7 +92,7 @@ class MaintenanceRecord(db.Model):
     registered_by = db.Column(db.Integer, db.ForeignKey('user.staffno'), nullable=False)
     maintenance_date = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
     is_external = db.Column(db.Boolean, nullable=False)
-    
+    isactive = db.Column(db.Boolean, default=False)
     # Workshop or Company reference
     workshop_id = db.Column(db.Integer, db.ForeignKey('workshop.id'))
     company_id = db.Column(db.Integer, db.ForeignKey('companyuser.cid'))

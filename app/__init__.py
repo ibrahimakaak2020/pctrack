@@ -33,7 +33,7 @@ def create_app(config_name='default'):
     
     # Initialize login manager
     login_manager.init_app(app)
-    login_manager.login_view = 'users_bp.login'  # Specify the login route
+    login_manager.login_view = 'users.login'  # Specify the login route
     login_manager.login_message_category = 'info'
     
     # Set a secret key for CSRF protection
