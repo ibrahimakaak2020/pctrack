@@ -1,15 +1,16 @@
 from flask import Blueprint, render_template, flash, redirect, url_for
 from flask_login import login_required, current_user
-from app.models.tables import Equipment
+from app.models.tables import Equipment, User
 from app.forms.equipment_forms import EquipmentForm, EquipmentSearchForm
-from app.db.database import db
+from app.db.database import db, load_user
 
 equipment_bp = Blueprint('equipment', __name__)
 
-@equipment_bp.route('/equipment')
+@equipment_bp.route('/equipment', methods=['GET', 'POST'])
 @login_required
 def index():
     search_form = EquipmentSearchForm()
+    print("^^^^^^^",search_form.search.data)
     query = Equipment.query
     
     if search_form.search.data:
@@ -75,6 +76,14 @@ def edit(sn):
     return render_template('equipment/edit.html', form=form, equipment=equipment) 
 
 
+
+
+@equipment_bp.route('/equipment/maintenance/<sn>')  # Add this route
+@login_required
+def viewequipmentmaintenance(sn):
+    equipment = Equipment.query.filter_by(sn=sn).first_or_404()
+    created_by=load_user(equipment.created_by).staffname
+    return render_template('equipment/equipment.html', equipments=equipment,created_by=created_by)
 
 
 @equipment_bp.route('/equipment/<sn>')  # Add this route

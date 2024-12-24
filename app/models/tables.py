@@ -92,7 +92,7 @@ class MaintenanceRecord(db.Model):
     registered_by = db.Column(db.Integer, db.ForeignKey('user.staffno'), nullable=False)
     maintenance_date = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
     is_external = db.Column(db.Boolean, nullable=False)
-    isactive = db.Column(db.Boolean, default=False)
+    isactive = db.Column(db.Boolean, default=True)
     # Workshop or Company reference
     workshop_id = db.Column(db.Integer, db.ForeignKey('workshop.id'))
     company_id = db.Column(db.Integer, db.ForeignKey('companyuser.cid'))
@@ -115,8 +115,9 @@ class MaintenanceRecord(db.Model):
     company = db.relationship('CompanyUser', backref=db.backref('maintenance_records', lazy=True))
 
     def __repr__(self):
-        location = f"Company: {self.company.companyname_en}" if self.is_external else f"Workshop: {self.workshop.workshopname}"
-        return f'<MaintenanceRecord {self.id} ({self.current_status}) by {self.registered_user.staffname} at {location}>'
+        #location = f"Company: {self.company.companyname_en}" if self.is_external else f"Workshop: {self.workshop.workshopname}"
+        #print("from maintenance model ",location)
+        return f'<MaintenanceRecord {self.id} ({self.current_status}) >'
 
     @property
     def latest_status(self):

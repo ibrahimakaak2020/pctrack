@@ -3,7 +3,7 @@ from flask_wtf import FlaskForm
 from wtforms import SelectField, TextAreaField, FloatField, SubmitField
 from wtforms.validators import DataRequired
 from flask_login import login_required, current_user
-from app.forms import EquipmentRegistrationForm
+from app.forms.maintenancerecordform import MaintenanceRecordForm
 from app.models.tables import Equipment, MaintenanceRecord, MaintenanceStatus, Workshop, CompanyUser
 from app.db.database import db
 from datetime import datetime, timezone
@@ -118,36 +118,50 @@ def update_status(record_id):
 @login_required
 def new_record(sn):
     equipment = Equipment.query.get_or_404(sn)
-    form = EquipmentRegistrationForm()
+    form = MaintenanceRecordForm()
     if request.method == 'POST':
+        print("*********** from POST")
         try:
+            print("*********** from try")
+            print(sn,request.form.get('is_external') == '1' )
             record = MaintenanceRecord(
                 equipment_sn=sn,
                 registered_by=current_user.staffno,
-                is_external=request.form.get('is_external', type=bool),
+                is_external=request.form.get('is_external') == '1' ,
                 problem_description=request.form.get('problem_description'),
                 current_status='pending'
             )
+          
             
             if record.is_external:
-                record.company_id = request.form.get('company_id', type=int)
+                record.company_id = form.company_id.data
+                if form.is_external.data:
+                    company_id = form.company_id.data
+                    if company_id is None:
+                        # Handle the case where company_id is required for external maintenance
+                        flash("Company ID is required for external maintenance.", "error")
+                        return redirect(url_for('maintenance_record'))
+                    else:
+                        print(company_id)
+                
             else:
                 record.workshop_id = request.form.get('workshop_id', type=int)
-            
+            print("******************",record)
             db.session.add(record)
+            db.session.commit()
+            equipment.isundermaintenance=True
+            db.session.commit()
+
+            
+
             
             # Create initial status
-            initial_status = MaintenanceStatus(
-                maintenance_id=record.id,
-                status='pending',
-                notes='Maintenance request registered',
-                updated_by=current_user.staffno
-            )
+            initial_status = MaintenanceStatus(maintenance_id=record.id,status='pending',notes='Maintenance request registered',updated_by=current_user.staffno)
             db.session.add(initial_status)
             
             db.session.commit()
             flash('New maintenance record created successfully', 'success')
-            return redirect(url_for('maintenance.record_detail', record_id=record.id))
+            return redirect(url_for('main.dashboard', record_id=record.id))
             
         except Exception as e:
             db.session.rollback()
