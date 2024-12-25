@@ -14,7 +14,7 @@
           <div class="my-3 ">
             <div class="card border border-warning-subtle">
               <div class="card-header">
-                <h5 class="mb-0">Serial Number:<span class="h4 pb-2 mb-4 text-danger border-bottom border-danger">{{ equipments.sn }}</span> </h5>
+                <h5 class="mb-0">Serial Number:<span class="h4 pb-2 mb-4 text-danger border-bottom border-danger mx-2">{{ equipments.sn | upper}}</span> </h5>
               </div>
               <div class="card-body">
                 <div class="row border">
@@ -29,11 +29,14 @@
                   </div>
                 </div>
                 <div class="row border">
-                  <div class="col-md-6">
+                  <div class="col-md-3">
                     <p>Location: {{ equipments.locname }}</p>
                   </div>
-                  <div class="col-md-6">
+                  <div class="col-md-3">
                     <p>Building: {{ equipments.building }}</p>
+                  </div>
+                  <div class="col-md-6 border-warning-subtle">
+                    <p>Notes: {{ equipments.note }}</p>
                   </div>
                 </div>
                 <div class="row">
