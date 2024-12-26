@@ -1,5 +1,6 @@
 from flask import Blueprint, render_template, flash, redirect, url_for
 from flask_login import login_required, current_user
+from app.forms.maintenancerecordform import MaintenanceRecordForm
 from app.models.tables import Equipment, User
 from app.forms.equipment_forms import EquipmentForm, EquipmentSearchForm
 from app.db.database import db, load_user
@@ -81,9 +82,10 @@ def edit(sn):
 @equipment_bp.route('/equipment/maintenance/<sn>')  # Add this route
 @login_required
 def viewequipmentmaintenance(sn):
+    maintenanceregisterform= MaintenanceRecordForm()
     equipment = Equipment.query.filter_by(sn=sn).first_or_404()
     created_by=load_user(equipment.created_by).staffname
-    return render_template('equipment/equipment.html', equipments=equipment,created_by=created_by)
+    return render_template('equipment/equipment.html', equipments=equipment,created_by=created_by,maintenanceregisterform=maintenanceregisterform)
 
 
 @equipment_bp.route('/equipment/<sn>')  # Add this route

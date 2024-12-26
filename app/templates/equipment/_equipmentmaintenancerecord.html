@@ -1,4 +1,4 @@
-{% if equipments.maintenance_records.count()>0 %}
+{% if equipments.maintenance_records|length > 0 %}
 {% if equipments.isundermaintenance %}
               {% for maintenance in equipments.maintenance_records %}
               {% if maintenance.isactive %}
@@ -11,13 +11,13 @@
                  
                 </div>
 
-                {% if maintenance.statuses.count()>0 %}
+                {% if maintenance.statuses|length > 0 %}
                 
                 <div class="card-body " style="
                 height: 200px; /* Fixed height */
                 overflow-y: auto; /* Make it scrollable */
               ">
-              {% include "add_status.html" %}
+             
               <hr>
                   {% for status in maintenance.statuses %}
                   <div class="card {% if status.status=='in-prograss' %}border-warning{% else %}border-success{% endif %} mb-3 p-3">
@@ -55,7 +55,7 @@
   <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#registerMaintenanceModal">
     Register Maintenance
   </button>
-  {% include "registermaintenanceform.html" %}
+  {% include "equipment/registermaintenanceform.html" %}
 </div>
 
 {% endif %}
@@ -65,6 +65,6 @@
   <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#registerMaintenanceModal">
     Register Maintenance
   </button>
-  {% include "registermaintenanceform.html" %}
+  {% include "equipment/registermaintenanceform.html" %}
 </div>
 {% endif %}

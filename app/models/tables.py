@@ -103,7 +103,8 @@ class MaintenanceRecord(db.Model):
     completion_date = db.Column(db.DateTime)
     final_cost = db.Column(db.Float)
     resolution_notes = db.Column(db.Text)
- 
+    statuses = db.relationship('MaintenanceStatus', backref='maintenance_record', lazy=True)
+
     
     # Current status (computed from latest status update)
     current_status = db.Column(db.String(20), nullable=False, default='pending')

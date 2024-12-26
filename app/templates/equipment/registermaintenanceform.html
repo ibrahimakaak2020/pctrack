@@ -1,0 +1,55 @@
+<!-- Modal -->
+<div class="modal fade" id="registerMaintenanceModal" tabindex="-1" role="dialog" aria-labelledby="modalTitle" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalTitle">Register Maintenance</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- Form -->
+                <form method="POST" id="maintenanceForm" class="needs-validation" novalidate  action="{{ url_for('maintenance.new_record', sn=equipments.sn) }}">
+                    {{ maintenanceregisterform.hidden_tag() }}
+
+                    <!-- Status Field -->
+                    <div class="form-group">
+                        {{ maintenanceregisterform.current_status.label(class="form-label font-weight-bold") }}
+                        {{ maintenanceregisterform.current_status(class="form-control", placeholder="Select status") }}
+                    </div>
+
+                    <!-- Problem Note Field -->
+                    <div class="form-group">
+                        {{ maintenanceregisterform.problem_description.label(class="form-label font-weight-bold") }}
+                        {{ maintenanceregisterform.problem_description(class="form-control", placeholder="Enter problem details") }}
+                    </div>
+                    
+                    <!-- Submit Button -->
+                    <button type="submit" class="btn btn-primary">Register</button>
+                </form>
+
+                <!-- Error Messages -->
+                {% if maintenanceregisterform.errors %}
+                <div class="alert alert-danger mt-4">
+                    <strong>Please correct the errors below:</strong>
+                    <ul>
+                        {% for field, errors in maintenanceregisterform.errors.items() %}
+                            {% for error in errors %}
+                                <li>{{ field|capitalize }}: {{ error }}</li>
+                            {% endfor %}
+                        {% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Back Link -->
+<a href="{{ url_for('equipment.index') }}" class="btn btn-secondary mt-3">Back to Home</a>
+</div>
