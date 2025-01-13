@@ -1,0 +1,131 @@
+{% extends "maintenance/base_maintenance.html" %}
+
+{% block maintenance_header %}
+<div class="d-flex justify-content-between align-items-center">
+    <div>
+        <h2>{{ equipment.model_name }}</h2>
+        <p class="text-muted">Serial Number: {{ equipment.sn }}</p>
+    </div>
+    <div>
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#newMaintenanceModal">
+            <i class="bi bi-plus-lg"></i> New Maintenance
+        </button>
+    </div>
+</div>
+{% endblock %}
+
+{% block maintenance_content %}
+<div class="maintenance-stats mb-4">
+    <div class="row g-3">
+        <div class="col-md-3">
+            <div class="stat-card">
+                <div class="stat-icon bg-primary">
+                    <i class="bi bi-tools"></i>
+                </div>
+                <div class="stat-details">
+                    <h3>{{ active_count }}</h3>
+                    <p>Active Records</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stat-card">
+                <div class="stat-icon bg-success">
+                    <i class="bi bi-check-circle"></i>
+                </div>
+                <div class="stat-details">
+                    <h3>{{ completed_count }}</h3>
+                    <p>Completed</p>
+                </div>
+            </div>
+        </div>
+        <!-- Add more stats as needed -->
+    </div>
+</div>
+
+<div class="maintenance-records">
+    <div class="card">
+        <div class="card-header">
+            <h5 class="mb-0">Maintenance History</h5>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Date</th>
+                            <th>Status</th>
+                            <th>Type</th>
+                            <th>Location</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for record in records %}
+                        <tr>
+                            <td>#{{ record.id }}</td>
+                            <td>{{ record.maintenance_date.strftime('%Y-%m-%d') }}</td>
+                            <td>
+                                <span class="badge bg-{{ status_colors[record.current_status] }}">
+                                    {{ record.current_status|title }}
+                                </span>
+                            </td>
+                            <td>{{ 'External' if record.is_external else 'Internal' }}</td>
+                            <td>
+                                {% if record.is_external %}
+                                    {{ record.company.companyname_en }}
+                                {% else %}
+                                    {{ record.workshop.workshopname }}
+                                {% endif %}
+                            </td>
+                            <td>
+                                <div class="btn-group">
+                                    <a href="{{ url_for('maintenance.record_detail', record_id=record.id) }}" 
+                                       class="btn btn-sm btn-outline-primary">
+                                        <i class="bi bi-eye"></i>
+                                    </a>
+                                    {% if current_user.isadmin or record.registered_by == current_user.staffno %}
+                                    <button type="button" 
+                                            class="btn btn-sm btn-outline-danger"
+                                            onclick="confirmDelete({{ record.id }})">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                    {% endif %}
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- New Maintenance Modal -->
+<div class="modal fade" id="newMaintenanceModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">New Maintenance Record</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="newMaintenanceForm" method="POST" 
+                      action="{{ url_for('maintenance.new_record', sn=equipment.sn) }}">
+                    <div class="mb-3">
+                        <label class="form-label">Maintenance Type</label>
+                        <div class="btn-group w-100" role="group">
+                            <input type="radio" class="btn-check" name="is_external" 
+                                   id="internal" value="0" checked>
+                            <label class="btn btn-outline-primary" for="internal">Internal</label>
+                            
+                            <input type="radio" class="btn-check" name="is_external" 
+                                   id="external" value="1">
+                            <label class="btn btn-outline-primary" for="external">External</label>
+                        </div>
+                    </div>
+
+                    <div class="mb-3"
+</file>

@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6 my-3">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="card-title mb-0">
+                        <i class="fa-solid fa-screwdriver-wrench"></i> Register New Equipment
+                    </h4>
+                </div>
+                <div class="card-body">
+                    
+
+                    {% with messages = get_flashed_messages() %}
+                    {% if messages %}
+                    <ul class="flashes">
+                        {% for message in messages %}
+                        <li>{{ message }}</li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
+                    {% endwith %}
+
+                    <form method="POST" action="{{ url_for('maintenance.new_record',sn=equipment.sn) }}" class="needs-validation" novalidate>
+                        {{ form.hidden_tag() }} <!-- CSRF protection -->
+
+                        <div class="form-group mb-3">
+                            <label for="maintenance_date">Maintenance Date</label>
+                            <input type="datetime-local" class="form-control" id="maintenance_date" name="maintenance_date" required>
+                            {% for error in form.maintenance_date.errors %}
+                            <span class="text-danger">{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                        <div class="form-group mb-3">
+                            <label for="is_external">External Maintenance</label>
+                            <div class="form-check">
+                                <input type="checkbox" class="form-check-input" id="is_external" name="is_external" value="1">
+                                <label class="form-check-label" for="is_external">Yes</label>
+                            </div>
+                            {% for error in form.is_external.errors %}
+                            <span class="text-danger">{{ error }}</span>
+                            {% endfor %}
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label for="workshop_id">Workshop</label>
+                            <select class="form-control" id="workshop_id" name="workshop_id" required>
+                                <option value="">Select a Workshop</option>
+                                {% for value, label, building in form.workshop_id.choices %}
+                                <option value="{{ value }}">{{ label }} -- {{ building }}</option>
+                                {% endfor %}
+                            </select>
+                            {% for error in form.workshop_id.errors %}
+                            <span class="text-danger">{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                        <div class="form-group mb-3">
+                            <label for="company_id">Company</label>
+                            <select class="form-control" id="company_id" name="company_id" required>
+                                <option value="">Select company</option>
+                                {% for company in companies %}
+                                <option value="{{ company.cid }}">{{ company.staffname }} - {{ company.companyname_en }}</option>
+                                {% endfor %}
+                            </select>
+                            {% for error in form.company_id.errors %}
+                            <span class="text-danger">{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                        <div class="form-group mb-3">
+                            <label for="problem_description">Problem Description</label>
+                            <textarea class="form-control" id="problem_description" name="problem_description" required></textarea>
+                            {% for error in form.problem_description.errors %}
+                            <span class="text-danger">{{ error }}</span>
+                            {% endfor %}
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label for="current_status">Current Status</label>
+                            <select class="form-control" id="current_status" name="current_status" required>
+                                <option value="pending">Pending</option>
+                                <option value="completed">Completed</option>
+                                <option value="in_progress">In Progress</option>
+                            </select>
+                            {% for error in form.current_status.errors %}
+                            <span class="text-danger">{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </form>
+
+
+                    <a href="{{ url_for('equipment.index') }}">Back to Equipment List</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

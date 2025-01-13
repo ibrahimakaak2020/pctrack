@@ -1,0 +1,147 @@
+{% extends "maintenance/base_maintenance.html" %}
+
+{% block maintenance_header %}
+<div class="d-flex justify-content-between align-items-center">
+    <div>
+        <h2>Maintenance Record #{{ record.id }}</h2>
+        <p class="text-muted">{{ record.equipment.model_name }} (SN: {{ record.equipment.sn }})</p>
+    </div>
+    <div>
+        <span class="badge bg-{{ status_colors[record.current_status] }} fs-6">
+            {{ record.current_status|title }}
+        </span>
+    </div>
+</div>
+{% endblock %}
+
+{% block maintenance_content %}
+<div class="row">
+    <div class="col-md-8">
+        <!-- Status Timeline -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">Status Timeline</h5>
+            </div>
+            <div class="card-body">
+                <div class="timeline">
+                    {% for status in status_updates %}
+                    <div class="timeline-item">
+                        <div class="timeline-marker bg-{{ status_colors[status.status] }}"></div>
+                        <div class="timeline-content">
+                            <div class="d-flex justify-content-between">
+                                <h6>{{ status.status|title }}</h6>
+                                <small class="text-muted">
+                                    {{ status.status_date.strftime('%Y-%m-%d %H:%M') }}
+                                </small>
+                            </div>
+                            <p class="mb-1">{{ status.notes }}</p>
+                            <small class="text-muted">Updated by: {{ status.user.staffname }}</small>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Status Update Form -->
+        {% if current_user.isadmin or record.registered_by == current_user.staffno %}
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Update Status</h5>
+            </div>
+            <div class="card-body">
+                <form action="{{ url_for('maintenance.update_status', record_id=record.id) }}" 
+                      method="POST">
+                    {{ form.hidden_tag() }}
+                    
+                    <div class="mb-3">
+                        {{ form.status.label(class="form-label") }}
+                        {{ form.status(class="form-select") }}
+                    </div>
+                    
+                    <div class="mb-3">
+                        {{ form.notes.label(class="form-label") }}
+                        {{ form.notes(class="form-control", rows="3") }}
+                    </div>
+                    
+                    {% if record.current_status == 'in_progress' %}
+                    <div class="completion-details">
+                        <div class="mb-3">
+                            {{ form.final_cost.label(class="form-label") }}
+                            {{ form.final_cost(class="form-control") }}
+                        </div>
+                        <div class="mb-3">
+                            {{ form.resolution_notes.label(class="form-label") }}
+                            {{ form.resolution_notes(class="form-control", rows="3") }}
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    {{ form.submit(class="btn btn-primary") }}
+                </form>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    <div class="col-md-4">
+        <!-- Record Details -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">Record Details</h5>
+            </div>
+            <div class="card-body">
+                <dl class="row mb-0">
+                    <dt class="col-sm-4">Type</dt>
+                    <dd class="col-sm-8">{{ 'External' if record.is_external else 'Internal' }}</dd>
+                    
+                    <dt class="col-sm-4">Location</dt>
+                    <dd class="col-sm-8">
+                        {% if record.is_external %}
+                            {{ record.company.companyname_en }}
+                        {% else %}
+                            {{ record.workshop.workshopname }}
+                        {% endif %}
+                    </dd>
+                    
+                    <dt class="col-sm-4">Registered</dt>
+                    <dd class="col-sm-8">{{ record.maintenance_date.strftime('%Y-%m-%d') }}</dd>
+                    
+                    <dt class="col-sm-4">Registered By</dt>
+                    <dd class="col-sm-8">{{ record.registered_user.staffname }}</dd>
+                    
+                    {% if record.completion_date %}
+                    <dt class="col-sm-4">Completed</dt>
+                    <dd class="col-sm-8">{{ record.completion_date.strftime('%Y-%m-%d') }}</dd>
+                    
+                    <dt class="col-sm-4">Final Cost</dt>
+                    <dd class="col-sm-8">${{ "%.2f"|format(record.final_cost or 0) }}</dd>
+                    {% endif %}
+                </dl>
+            </div>
+        </div>
+
+        <!-- Problem Description -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">Problem Description</h5>
+            </div>
+            <div class="card-body">
+                <p class="mb-0">{{ record.problem_description }}</p>
+            </div>
+        </div>
+
+        {% if record.resolution_notes %}
+        <!-- Resolution Notes -->
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Resolution Notes</h5>
+            </div>
+            <div class="card-body">
+                <p class="mb-0">{{ record.resolution_notes }}</p>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %} 

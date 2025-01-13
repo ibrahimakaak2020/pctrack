@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">Add New Equipment</h4>
+                </div>
+                <div class="card-body">
+                    <form method="POST" action="{{ url_for('equipment.create') }}">
+                        {{ form.hidden_tag() }}
+                        
+                        {% for field in [form.sn, form.model_name] %}
+                        <div class="mb-3">
+                            {{ field.label(class="form-label") }}
+                            {{ field }}
+                            {% if field.description %}
+                            <div class="form-text text-muted">
+                                {{ field.description }}
+                            </div>
+                            {% endif %}
+                            {% if field.errors %}
+                            <div class="invalid-feedback d-block">
+                                {% for error in field.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+
+                        <!-- Special handling for equipment_type -->
+                        <div class="mb-3">
+                            {{ form.equipment_type.label(class="form-label") }}
+                            <input class="form-control" list="equipmentTypeList" id="{{ form.equipment_type.id }}" 
+                                   name="{{ form.equipment_type.name }}" value="{{ form.equipment_type.data or '' }}"
+                                   placeholder="Type or select an equipment type">
+                            <datalist id="equipmentTypeList">
+                                {% for type in equipment_types %}
+                                    <option value="{{ type }}">{{ type }}</option>
+                                {% endfor %}
+                            </datalist>
+                            <div class="form-text text-muted">
+                                You can select an existing type or enter a new one
+                            </div>
+                            {% if form.equipment_type.errors %}
+                            <div class="invalid-feedback d-block">
+                                {% for error in form.equipment_type.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+                        </div>
+
+                        {% for field in [form.manufacturer, form.locname, form.building, form.note] %}
+                        <div class="mb-3">
+                            {{ field.label(class="form-label") }}
+                            {{ field }}
+                            {% if field.description %}
+                            <div class="form-text text-muted">
+                                {{ field.description }}
+                            </div>
+                            {% endif %}
+                            {% if field.errors %}
+                            <div class="invalid-feedback d-block">
+                                {% for error in field.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+
+                        <div class="d-grid gap-2">
+                            {{ form.submit(class="btn btn-primary") }}
+                            <a href="{{ url_for('equipment.index') }}" class="btn btn-secondary">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Optional: Add custom styles -->
+<style>
+    .form-label {
+        font-weight: 500;
+    }
+    .card {
+        box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    }
+    .card-header {
+        background: linear-gradient(45deg, #007bff, #0056b3);
+    }
+    .btn-primary {
+        background: #007bff;
+        border-color: #007bff;
+    }
+    .btn-primary:hover {
+        background: #0056b3;
+        border-color: #0056b3;
+    }
+</style>
+{% endblock %} 

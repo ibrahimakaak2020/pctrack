@@ -1,0 +1,27 @@
+<tr>
+    <td>
+      <a href="#" class="btn btn-sm btn-info">View</a>
+      <a href="#" class="btn btn-sm btn-warning">Edit</a>
+   
+    </td>
+
+    <td>
+      <a
+      href="{{ url_for('delete_maintenance_status', maintenance_status_id=status.id ) }}"
+      class="btn btn-sm btn-warning"
+      >Delete</a
+    >
+    </td>
+
+    <td>
+      {{status.status }}
+      
+    </td>
+
+    <td>
+      {{status.status_note }} 
+    </td>
+    <td>
+      {{ status.status_date }}
+    </td>
+  </tr>

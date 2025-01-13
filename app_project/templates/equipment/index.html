@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Equipment List</h1>
+        <a href="{{ url_for('equipment.create') }}" class="btn btn-primary">Add New Equipment</a>
+    </div>
+
+    <form method="post" class="mb-4" action="{{ url_for('equipment.index') }}" onsubmit="return false;">
+        <div class="input-group">
+            {{ search_form.hidden_tag() }}
+            <input type="text" id="searchInput" class="form-control" placeholder="Search equipment..." oninput="filterTable()">
+            <button type="submit" class="btn btn-outline-secondary">{{ search_form.submit.label }}</button>
+        </div>
+    </form>
+
+    <div class="table-responsive">
+        <table class="table table-striped" id="equipmentTable">
+            <thead>
+                <tr>
+                    <th>Serial Number</th>
+                    <th>Model Name</th>
+                    <th>Type</th>
+                    <th>Manufacturer</th>
+                    <th>Location</th>
+                    <th>Building</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in equipment %}
+                <tr>
+                    <td>{{ item.sn }}</td>
+                    <td>{{ item.model_name }}</td>
+                    <td>{{ item.equipment_type }}</td>
+                    <td>{{ item.manufacturer }}</td>
+                    <td>{{ item.locname }}</td>
+                    <td>{{ item.building }}</td>
+                    <td>
+                        <a href="{{ url_for('equipment.viewequipmentmaintenance', sn=item.sn) }}" class="btn btn-sm btn-info">View</a>
+                        <a href="{{ url_for('equipment.edit', sn=item.sn) }}" class="btn btn-sm btn-warning">Edit</a>
+                      {% if not item.isundermaintenance  %} 
+                       <a href="{{ url_for('maintenance.new_record', sn=item.sn) }}" class="btn btn-sm btn-success">Add Maintenance</a>
+                   {%endif%}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    function filterTable() {
+        const input = document.getElementById('searchInput');
+        const filter = input.value.toLowerCase();
+        const table = document.getElementById('equipmentTable');
+        const rows = table.getElementsByTagName('tr');
+
+        for (let i = 1; i < rows.length; i++) { // Start from 1 to skip the header
+            const cells = rows[i].getElementsByTagName('td');
+            let match = false;
+
+            for (let j = 0; j < cells.length; j++) {
+                if (cells[j].textContent.toLowerCase().includes(filter)) {
+                    match = true;
+                    break;
+                }
+            }
+
+            rows[i].style.display = match ? '' : 'none';
+        }
+    }
+</script>
+{% endblock %} 

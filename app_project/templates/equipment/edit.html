@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    Edit Equipment
+                </div>
+                <div class="card-body">
+
+    
+    <form method="POST" class="mt-4">
+        {{ form.hidden_tag() }}
+        
+        {% for field in [form.model_name, form.equipment_type, 
+                        form.manufacturer, form.locname, form.building, form.note] %}
+        <div class="mb-3">
+            {{ field.label(class="form-label") }}
+            {% if field.type == "TextAreaField" %}
+                {{ field(class="form-control" + (" is-invalid" if field.errors else ""), rows=3) }}
+            {% else %}
+                {{ field(class="form-control" + (" is-invalid" if field.errors else "")) }}
+            {% endif %}
+            
+            {% if field.errors %}
+                {% for error in field.errors %}
+                    <div class="invalid-feedback">{{ error }}</div>
+                {% endfor %}
+            {% endif %}
+        </div>
+        {% endfor %}
+        
+        {{ form.submit(class="btn btn-primary") }}
+        <a href="{{ url_for('equipment.view', sn=equipment.sn) }}" class="btn btn-secondary">Cancel</a>
+    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

@@ -1,0 +1,70 @@
+{% if equipments.maintenance_records|length > 0 %}
+{% if equipments.isundermaintenance %}
+              {% for maintenance in equipments.maintenance_records %}
+              {% if maintenance.isactive %}
+              <div class="card">
+                <div class="card-header">
+                  <div class="alert alert-primary" role="alert">
+                    Maintenance Note :{{ maintenance.problem_note }}
+                  </div>
+                  <hr>
+                 
+                </div>
+
+                {% if maintenance.statuses|length > 0 %}
+                
+                <div class="card-body " style="
+                height: 200px; /* Fixed height */
+                overflow-y: auto; /* Make it scrollable */
+              ">
+             
+              <hr>
+                  {% for status in maintenance.statuses %}
+                  <div class="card {% if status.status=='in-prograss' %}border-warning{% else %}border-success{% endif %} mb-3 p-3">
+
+
+                    <p>Status :{{ status.status }}</p>
+                    <p>Status Note :{{ status.status_note }}</p>
+                    <p>Date :{{ status.status_date }}</p>
+
+
+                  </div>
+                  {% endfor %}
+                </div>
+                <hr>
+
+
+                {% else %}
+                <div cbg-primary>
+                  <p class="p-3 mb-2 text-white">No status records found for this maintenance</p>
+                </div>
+                {% include "add_status.html" %}
+                {% endif %}
+
+              </div>
+
+             {% endif %}
+
+
+              {% endfor %}
+{% else %}
+
+
+<div>
+  <p class="p-3 mb-2  text-white">No maintenance records found for this equipment</p>
+  <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#registerMaintenanceModal">
+    Register Maintenance
+  </button>
+  {% include "equipment/registermaintenanceform.html" %}
+</div>
+
+{% endif %}
+{% else %}
+<div>
+  <p class="p-3 mb-2  text-white">No maintenance records found for this equipment</p>
+  <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#registerMaintenanceModal">
+    Register Maintenance
+  </button>
+  {% include "equipment/registermaintenanceform.html" %}
+</div>
+{% endif %}
