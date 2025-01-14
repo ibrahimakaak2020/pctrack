@@ -1,32 +1,46 @@
-from flask import Flask
+from flask import Flask, render_template
 from flask_sqlalchemy import SQLAlchemy
-from flask_login import LoginManager
 
-db = SQLAlchemy()
-login_manager = LoginManager()
+from app_project.config.config import config_dict
 
-def create_app():
+from  app_project.db.database import db,init_db,login_manager
+
+def create_app(config_name='default'):
     app = Flask(__name__)
-    app.config['SECRET_KEY'] = 'your_secret_key'
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
+  
+    @app.errorhandler(404)
+    def not_found_error(error):
+     
+        return render_template('errors/404.html'), 404
+
+    @app.errorhandler(500)
+    def internal_error(error):
+        return render_template('errors/500.html'), 500
+
+    @app.errorhandler(403)
+    def forbidden_error(error):
     
-    db.init_app(app)
-    login_manager.init_app(app)
+        return render_template('errors/403.html'), 403 
+    # Load configuration
+    app.config.from_object(config_dict[config_name])
+    
+    init_db(app=app)
+
     
     with app.app_context():
-        from .user import user as user_blueprint
-        from .companyuser import companyuser as companyuser_blueprint
-        from .workshop import workshop as workshop_blueprint
-        from .equipment import equipment as equipment_blueprint
-        from .maintenancerecord import maintenancerecord as maintenancerecord_blueprint
-        from .maintenancestatus import maintenancestatus as maintenancestatus_blueprint
+        from .user.routes import user as user_blueprint
+        #from .companyuser import companyuser as companyuser_blueprint
+        #from .workshop import workshop as workshop_blueprint
+        #from .equipment import equipment as equipment_blueprint
+        #from .maintenancerecord import maintenancerecord as maintenancerecord_blueprint
+        #from .maintenancestatus import maintenancestatus as maintenancestatus_blueprint
 
-        app.register_blueprint(user_blueprint, url_prefix='/users')
-        app.register_blueprint(companyuser_blueprint, url_prefix='/companyusers')
-        app.register_blueprint(workshop_blueprint, url_prefix='/workshops')
-        app.register_blueprint(equipment_blueprint, url_prefix='/equipment')
-        app.register_blueprint(maintenancerecord_blueprint, url_prefix='/maintenancerecords')
-        app.register_blueprint(maintenancestatus_blueprint, url_prefix='/maintenancestatuses')
+        app.register_blueprint(user_blueprint, url_prefix='/u')
+        #app.register_blueprint(companyuser_blueprint, url_prefix='/companyusers')
+        #app.register_blueprint(workshop_blueprint, url_prefix='/workshops')
+        #app.register_blueprint(equipment_blueprint, url_prefix='/equipment')
+        #app.register_blueprint(maintenancerecord_blueprint, url_prefix='/maintenancerecords')
+        #app.register_blueprint(maintenancestatus_blueprint, url_prefix='/maintenancestatuses')
         
         # Create all tables
         db.create_all()

@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}{% endblock %} - PC Track</title>
     <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Font Awesome -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <!-- Custom CSS -->
     <style>
@@ -77,14 +77,14 @@
         .sidebar .nav-link.active {
             background-color: var(--accent-light);
             color: var(--neutral-800);
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
         /* Navbar styles */
         .navbar {
             background: var(--neutral-100) !important;
             border-bottom: 1px solid var(--neutral-300);
-            box-shadow: 0 2px 15px rgba(0,0,0,0.05);
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
         }
 
         .navbar-brand {
@@ -96,7 +96,7 @@
         /* Card styles */
         .card {
             border: none;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
             background: var(--neutral-100);
             border-radius: 0.75rem;
         }
@@ -172,7 +172,7 @@
         /* Dropdown styles */
         .dropdown-menu {
             border: none;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             border-radius: 0.5rem;
         }
 
@@ -200,33 +200,38 @@
     </style>
     {% block extra_css %}{% endblock %}
 </head>
+
 <body>
     <div class="container-fluid">
         <div class="row">
+            <!-- Toggle Button (Hamburger Menu) -->
+            <button class="btn btn-primary d-md-none" type="button" data-bs-toggle="collapse" data-bs-target="#sidebar"
+                aria-controls="sidebar" aria-expanded="false" aria-label="Toggle navigation">
+                <i class="fas fa-bars"></i>
+            </button>
+
             <!-- Sidebar -->
-            <div class="col-md-3 col-lg-2 d-md-block sidebar collapse">
+            <div class="col-md-3 col-lg-2 d-md-block sidebar collapse " id="sidebar">
                 <div class="position-sticky pt-3">
                     <div class="text-center mb-4">
-                        <img src="{{ url_for('static', filename='images/logo.jpg') }}" 
-                             alt="PC Track" 
-                             height="40">
+                        <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="PC Track" height="40">
                     </div>
-                    
+
                     <ul class="nav flex-column">
                         <!-- Dashboard -->
                         <li class="nav-item">
-                            <a class="nav-link {% if request.endpoint == 'main.index' %}active{% endif %}" 
-                               href="{{ url_for('main.index') }}">
+                            <a class="nav-link {% if request.endpoint == 'main.index' %}active{% endif %}"
+                                href="{{ url_for('main.index') }}">
                                 <i class="fas fa-home"></i>
                                 Dashboard
                             </a>
                         </li>
-                      
-                        
+
+
                         {% if current_user.is_authenticated %}
                         <li class="nav-item">
-                            <a class="nav-link {% if request.endpoint and request.endpoint.startswith('equipment.') %}active{% endif %}" 
-                               href="{{ url_for('equipment.index') }}">
+                            <a class="nav-link {% if request.endpoint and request.endpoint.startswith('equipment.') %}active{% endif %}"
+                                href="{{ url_for('equipment.index') }}">
                                 <i class="fas fa-tools"></i>
                                 Equipments
                             </a>
@@ -235,19 +240,23 @@
                         <!-- Companies -->
                         {% if current_user.is_authenticated %}
                         <li class="nav-item">
-                            <a class="nav-link {% if request.endpoint and request.endpoint.startswith('company.') %}active{% endif %}" 
-                               href="{{ url_for('company.company_list') }}">
+                            <a class="nav-link {% if request.endpoint and request.endpoint.startswith('company.') %}active{% endif %}"
+                                href="{{ url_for('company.company_list') }}">
                                 <i class="fas fa-building"></i>
                                 Companies
                             </a>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('maintenance.equipment_register') }}">Equipment &
+                                Maintenance</a>
+                        </li>
                         </li>
                         {% endif %}
 
                         <!-- Workshops -->
                         {% if current_user.is_authenticated %}
                         <li class="nav-item">
-                            <a class="nav-link {% if request.endpoint and request.endpoint.startswith('workshop.') %}active{% endif %}" 
-                               href="{{ url_for('workshop.list_workshops') }}">
+                            <a class="nav-link {% if request.endpoint and request.endpoint.startswith('workshop.') %}active{% endif %}"
+                                href="{{ url_for('workshop.list_workshops') }}">
                                 <i class="fas fa-tools"></i>
                                 Workshops
                             </a>
@@ -257,8 +266,8 @@
                         <!-- Users (Admin Only) -->
                         {% if current_user.is_authenticated and current_user.isadmin %}
                         <li class="nav-item">
-                            <a class="nav-link {% if request.endpoint and request.endpoint.startswith('users.') %}active{% endif %}" 
-                               href="{{ url_for('users.user_list') }}">
+                            <a class="nav-link {% if request.endpoint and request.endpoint.startswith('users.') %}active{% endif %}"
+                                href="{{ url_for('users.user_list') }}">
                                 <i class="fas fa-users"></i>
                                 Users
                             </a>
@@ -268,18 +277,27 @@
                         <!-- Reports -->
                         {% if current_user.is_authenticated %}
                         <li class="nav-item">
-                            <a class="nav-link {% if request.endpoint and request.endpoint.startswith('reports.') %}active{% endif %}" 
-                               href="#">
+                            <a class="nav-link {% if request.endpoint and request.endpoint.startswith('reports.') %}active{% endif %}"
+                                href="#">
                                 <i class="fas fa-chart-bar"></i>
                                 Reports
                             </a>
                         </li>
                         {% endif %}
+
+                        {% for equipment in equipment_list %}
+                        <li class="nav-item">
+                            <a href="{{ url_for('maintenance.equipment_history', sn=equipment.sn) }}" class="nav-link">
+                                {{ equipment.model_name }} History (SN: {{ equipment.sn }})
+                            </a>
+                        </li>
+                        {% endfor %}
                     </ul>
 
                     <!-- Settings Section -->
                     {% if current_user.is_authenticated %}
-                    <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+                    <h6
+                        class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
                         <span>Settings</span>
                     </h6>
                     <ul class="nav flex-column mb-2">
@@ -300,7 +318,8 @@
                 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
                     <div class="container">
                         <!-- Mobile Menu Toggle -->
-                        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                        <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#navbarNav">
                             <span class="navbar-toggler-icon"></span>
                         </button>
 
@@ -312,7 +331,7 @@
                         <!-- User Menu -->
                         <ul class="navbar-nav ms-auto">
                             {% if current_user.is_authenticated %}
-                                {% include 'components/user_nav.html' %}
+                            {% include 'components/user_nav.html' %}
                             {% else %}
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ url_for('users.login') }}">
@@ -326,14 +345,14 @@
 
                 <!-- Flash Messages -->
                 {% with messages = get_flashed_messages(with_categories=true) %}
-                    {% if messages %}
-                        {% for category, message in messages %}
-                            <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
-                                {{ message }}
-                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                            </div>
-                        {% endfor %}
-                    {% endif %}
+                {% if messages %}
+                {% for category, message in messages %}
+                <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+                {% endfor %}
+                {% endif %}
                 {% endwith %}
 
                 <!-- Main Content -->
@@ -343,12 +362,14 @@
     </div>
 
     <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
     
     <!-- Custom JS -->
     <script>
         // Auto-hide flash messages
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             const alerts = document.querySelectorAll('.alert');
             alerts.forEach(alert => {
                 setTimeout(() => {
@@ -360,4 +381,5 @@
     </script>
     {% block extra_js %}{% endblock %}
 </body>
-</html> 
+
+</html>

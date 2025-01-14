@@ -1,6 +1,6 @@
 from datetime import datetime, timezone
 from flask_login import UserMixin
-from app.db.database import db, login_manager
+from app_project.db.database import db, login_manager
 from werkzeug.security import generate_password_hash, check_password_hash
 from sqlalchemy import event
 from sqlalchemy.exc import IntegrityError

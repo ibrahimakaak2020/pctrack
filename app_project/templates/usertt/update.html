@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}Update User{% endblock %}
+{% block content %}
+<h1>Update User</h1>
+<form action="{{ url_for('user.update_user', id=user.staffno) }}" method="post">
+    <div class="form-group">
+        <label for="staffname">Name</label>
+        <input type="text" class="form-control" id="staffname" name="staffname" value="{{ user.staffname }}" required>
+    </div>
+    <div class="form-group">
+        <label for="password">Password (leave blank to keep current password)</label>
+        <input type="password" class="form-control" id="password" name="password">
+    </div>
+    <div class="form-group">
+        <label for="isadmin">Admin</label>
+        <input type="checkbox" id="isadmin" name="isadmin" {% if user.isadmin %}checked{% endif %}>
+    </div>
+    <button type="submit" class="btn btn-primary">Update</button>
+</form>
+{% endblock %}

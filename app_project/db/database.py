@@ -14,7 +14,7 @@ def init_db(app):
     migrate.init_app(app, db)
     
     # Configure Flask-Login
-    login_manager.login_view = 'users.login'
+    login_manager.login_view = 'user.get_users'
     login_manager.login_message_category = 'info'
     
     # Create tables if they don't exist
