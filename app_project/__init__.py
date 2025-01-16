@@ -29,6 +29,7 @@ def create_app(config_name='default'):
     
     with app.app_context():
         from .user.routes import user as user_blueprint
+        from .main.routes import main as main_blueprint
         #from .companyuser import companyuser as companyuser_blueprint
         #from .workshop import workshop as workshop_blueprint
         #from .equipment import equipment as equipment_blueprint
@@ -36,6 +37,7 @@ def create_app(config_name='default'):
         #from .maintenancestatus import maintenancestatus as maintenancestatus_blueprint
 
         app.register_blueprint(user_blueprint, url_prefix='/u')
+        app.register_blueprint(main_blueprint, url_prefix='/main')
         #app.register_blueprint(companyuser_blueprint, url_prefix='/companyusers')
         #app.register_blueprint(workshop_blueprint, url_prefix='/workshops')
         #app.register_blueprint(equipment_blueprint, url_prefix='/equipment')
